@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ annonce.title}}{% endblock %}
+
+{% block body %}
+    <div class="row align-items-center">
+        <div class="col-8">
+            <h1>{{ annonce.title}}</h1>
+        </div>
+        <div class="col-4 text-end">
+            <a 
+                class="link-dark" 
+                href="{{ path('app_home') }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            Accueil</a>
+        </div>
+    </div>
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                Par {{ annonce.username }}
+            </div>
+            <small class="text-muted">
+                Le {{ annonce.createdAt|date('d/m/y à H:i') }}
+            </small>
+        </div>
+        <div 
+            id="carousel-{{ annonce.slug }}" 
+            class="carousel carousel-dark" 
+            data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for image in images %}                    
+                    <div class="carousel-item {{ loop.first ? 'active' : ''}}">
+                        <img 
+                            src="{{ asset('/uploads/' ~ image.name) }}" 
+                            class="mx-auto d-block" 
+                            alt="{{ annonce.slug|replace({'-' : ' '}) }}"
+                            style="height: 350px;">
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev text-white-50" type="button" data-bs-target="#carousel-{{ annonce.slug }}" data-bs-slide="prev">
+                <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button 
+                class="carousel-control-next text-white-50" 
+                type="button" data-bs-target="#carousel-{{ annonce.slug }}" 
+                data-bs-slide="next">
+                <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                <span class="visually-hidden">
+                    Next
+                </span>
+            </button>
+        </div>
+        <div class="card-body text-dark">
+            <h3>{{ annonce.price }}€</h3>
+            <p>
+                {{ annonce.content }}
+            </p>
+            <small>
+                {{ annonce.categories }} - {{ annonce.title }}
+            </small>
+            <a 
+                class="btn btn-warning text-dark shadow-sm"
+                href="{{ path('users_messages_send') }}">
+                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                Contacter le vendeur
+            </a>
+        </div>
+    </div>
+
+    {# COMMENNTS #}
+
+    <div class="card shadow-sm my-4">
+        <div class="card-header">
+            <h6 class="mb-0">Commentaires</h6>
+        </div>
+        <div class="card-body">
+            {% for comment in comments %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <small>{{ comment.author.firstname }} {{ comment.author.name }} le {{ comment.createdAt|date('d/m/y à H:i') }}</small>
+                    {% if comment.author == app.user %}
+                        <div>
+        
+                            {# MODAL DELETE #}
+                            <button 
+                                type="button" 
+                                class="btn-silent" 
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDelete{{ comment.id }}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            <div 
+                                class="modal fade" 
+                                id="modalDelete{{ comment.id }}" 
+                                tabindex="-1" 
+                                aria-labelledby="modalDeleteLabel" 
+                                aria-hidden="true">
+
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 
+                                                class="modal-title" 
+                                                id="modalDeleteLabel">
+                                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                                Confirmer
+                                            </h5>
+                                            <button 
+                                                type="button" 
+                                                class="btn-close" 
+                                                data-bs-dismiss="modal" 
+                                                aria-label="Close">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Confirmer la suppression de ce commentaire ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <a 
+                                                href="{{ path('annonces_comment_delete', {"id" : comment.id, "id_annonce" : annonce.id}) }}" 
+                                                class="btn btn-dark">
+                                                Supprimer
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {# --- #}
+                        </div>
+                    {% endif %}
+                </div>
+                <p class="mb-1 text-dark">
+                    {{ comment.content }}
+                </p>
+                <hr>
+            {% endfor %}
+            {% if app.user %}
+                <h6>Ajouter un commentaire</h6>
+                {{ form(form) }}
+            {% else %}
+                Vous devez être connecter pour ajouter un commentaire. <br>
+                <a href="{{ path('app_login') }}">Se connecter</a> <br>
+                <a href="{{ path('app_register') }}">S'inscrire</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

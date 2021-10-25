@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ message.title }}{% endblock %}
+
+{% block body %}
+
+    <div class="row align-items-center">
+        <div class="col-8">
+            <h1>{{ message.title }}</h1>
+        </div>
+        <div class="col-4 text-end">
+            <a 
+                class="link-dark" 
+                href="{{ path('users_messages_home') }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            Messagerie</a>
+        </div>
+    </div>
+
+    <ul class="list-group mt-3">
+            <li class="list-group-item {{ message.isRead ? '' : 'bg-warning' }}">
+                <div class="row align-items-center">
+                    <div class="col-5 text-break">
+                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                        {{message.sender.firstname}}
+                        {{message.sender.name}}
+                    </div>
+                    <div class="col-7">
+                        {{message.createdAt|date('d/m/Y à H:i')}}
+                    </div>
+
+                    <div class="col-12 text-break">
+                        <i class="fa fa-envelope{{ message.isRead ? '-o' : '' }}" aria-hidden="true"></i>
+                        <a 
+                            class="link-dark"
+                            href="{{ path('users_message_read', {"id" : message.id })}}">
+                            {{message.title}}
+                        </a>
+                    </div>
+                    <hr>
+                    <div class="col mb-3">
+                        {{ message.message }}
+                    </div>
+                </div>
+            </li>
+    </ul>
+{% endblock %}

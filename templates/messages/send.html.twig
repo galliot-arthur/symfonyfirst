@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Envoyer un message{% endblock %}
+
+{% block body %}
+
+    <div class="row align-items-center">
+        <div class="col-8">
+            <h1>Envoyer un message</h1>
+        </div>
+        <div class="col-4 text-end">
+            <a 
+                class="link-dark" 
+                href="{{ path('users_messages_home') }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            Messagerie</a>
+        </div>
+    </div>
+    {# send message #}
+    {{ form_start(form) }}
+    {{ form_row(form.recipient) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.message) }}
+    {{ form_row(form.Envoyer) }}
+
+    {{ form_end(form) }}
+
+{% endblock %}

@@ -1,0 +1,60 @@
+.bg-img {
+    background-image: url('../media/header.jpg');
+    background-size: cover;
+}
+
+.card,
+.card-header,
+.list-group,
+.list-group-item,
+ul {
+    border: none;
+}
+
+.btn-silent {
+    position: relative;
+    left: -3px;
+    border: none;
+    background: transparent !important;
+}
+
+.underline-del {
+    text-decoration: none !important;
+}
+
+.img-cover {
+    display: block;
+    object-fit: contain;
+    width: 100%;
+}
+
+.thumb-pill {
+    display: block;
+    overflow: hidden;
+    height: 75px;
+    width: 75px;
+    border-radius: .25rem;
+    margin: 0;
+    padding: 0;
+}
+
+.img-thumb-pill {
+    object-fit: contain;
+    width: 100px;
+}
+
+.text-small {
+    font-size: .9rem;
+}
+
+.page-link {
+    color: #343a40!important;
+    background: #ffce67;
+    border: #ffce67;
+}
+
+.page-item.disabled .page-link {
+    color: #343a406b!important;
+    background: #ffefcd;
+    border: #ffefcd;
+}

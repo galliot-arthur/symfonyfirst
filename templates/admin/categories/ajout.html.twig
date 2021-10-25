@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ app.request.attributes.get('_route') == 'admin_categories_ajout' ? 'Ajouter' : 'Modifier' }} une catégorie{% endblock %}
+
+{% block body %}
+    <h1>{{ app.request.attributes.get('_route') == 'admin_categories_ajout' ? 'Ajouter' : 'Modifier' }} une catégorie</h1>
+
+    {{ form(form) }}
+
+{% endblock %}

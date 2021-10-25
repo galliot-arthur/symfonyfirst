@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+    <h1>Editer mon profil</h1>
+    
+    <form 
+        class="form-group"
+        action="" 
+        method="post">
+        <label
+            for="pass">
+            Entrer votre nouveau mot de passe :
+            </label>
+        <input 
+            class="form-control"
+            name="pass"
+            id="pass"
+            type="password">
+        <label
+            for="pass2">
+            Confirmer votre nouveau mot de passe :
+            </label>
+        <input 
+            class="form-control"
+            name="pass2"
+            id="pass2"
+            type="password">
+        <input 
+            class="btn btn-dark mt-2"
+            type="submit" 
+            value="Valider">
+    </form>
+{% endblock %}

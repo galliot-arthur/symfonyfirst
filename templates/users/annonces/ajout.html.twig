@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ app.request.attributes.get('_route') == 'users_annonces_ajout' ? 'Ajouter' : 'Modifier' }} une annonce{% endblock %}
+
+{% block body %}
+    <h1>{{ app.request.attributes.get('_route') == 'users_annonces_ajout' ? 'Ajouter' : 'Modifier' }} une annonce</h1>
+
+    {{ form(form) }}
+
+    {% if app.request.attributes.get('_route') == 'users_annonces_modifier' %}
+        <div class="row">
+            {% for image in images %}
+                <div class="col-3 col-md-2">
+                    <div class="card shadow-sm">
+                        <img 
+                            class="card-img-top"
+                            src="{{ asset('/uploads/' ~ image.name) }}" 
+                            alt="{{ annonce.slug|replace({'-' : ' '}) }}">
+                        <span class="position-absolute top-0 start-100 translate-middle">
+                            <a 
+                                class="btn"
+                                href="{{ path('annonces_delete_image', {id : image.id}) }}"
+                                data-delete
+                                data-token="{{ csrf_token('delete' ~ image.id) }}">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </a>
+                        </span>
+                        
+                    </div>
+                </div>        
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/images.js')}}"></script>
+{% endblock %}
