@@ -1,0 +1,79 @@
+<div class="row">
+	{% for annonce in annonces|sort((b, a) => a.createdAt <=> b.createdAt) %}
+		{% if annonce.active %}
+			<div class="col-12">
+				<div class="card shadow-sm mb-3 overflow-hidden">
+					<div class="row">
+						<div class="col-6 overflow-hidden bg-light p-0">
+							<a href="{{ path('annonces_view', {"id" : annonce.id}) }}">
+								<img class="img-cover" src="{{ asset('/uploads/' ~ annonce.image) }}" alt="{{ annonce.slug|replace({'-': ' '}) }}">
+							</a>
+						</div>
+						<div class="col-6 p-3 d-flex justify-content-between flex-column">
+							<a class="link-dark underline-del" href="{{ path('annonces_view', {"id" : annonce.id}) }}">
+								<h5>{{ annonce.title }}</h5>
+							</a>
+							<div class="text-muted text-small">Catégorie :
+								{{ annonce.category }}</div>
+							<div class="text-muted text-small">Posté par :
+								{{ annonce.owner }}</div>
+							<div class="mt-1 d-flex justify-content-between align-items-center w-100">
+								<div class="h5 mb-0">{{ annonce.price }}
+									€</div>
+								{% if app.user %}
+									<a class="ms-2 link-dark underline-del" href="like" data-like="{{ annonce.id }}">
+										<i class="fa fa-heart{{ annonce.heart ? " " : " -o" }}" aria-hidden="true"></i>
+									</a>
+								{% else %}
+									<a class="ms-2 link-dark underline-del" href="/login">
+										<i class="fa fa-heart-o" aria-hidden="true"></i>
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	{% else %}
+		<div class="col-12">
+			<div class="card shadow-sm mb-3 overflow-hidden">
+				<h3>Aucunes annonces trouvées, merci de repréciser votre recherche.</h3>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+{% set queryParams = app.request.query.all %}
+{% set queryString = queryParams|filter((v, k) => k != "actual_page" and k != "ajax")|url_encode %}
+
+{# PAGINATION #}
+<div>
+    <ul class="pagination pagination-sm">
+        <li 
+            class="page-item shadow-sm {{ actual_page == 1 ? 'disabled' : ''}}">
+            <a 
+                class="page-link" 
+                href="{{ actual_page - 1 }}/?{{ queryString }}">
+                &laquo;
+            </a>
+        </li>
+        {% for page in 1.. (( (total_annonces / limit)|round(0, 'ceil'))) %}                        
+            <li class="page-item shadow-sm {{ actual_page == page ? 'active' : '' }}">
+                <a 
+                    class="page-link" 
+                    href="/{{ page }}/?{{ queryString }}">
+                    {{ page }}
+                </a>
+            </li>
+        {% endfor %}
+        <li 
+            class="page-item shadow-sm {{ actual_page == (total_annonces / limit)|round(0, 'ceil') ? 'disabled' : ''}}">
+            <a 
+                class="page-link" 
+                href="{{ actual_page + 1 }}/?{{ queryString }}">
+                &raquo;
+                </a>
+        </li>
+    </ul>
+</div>

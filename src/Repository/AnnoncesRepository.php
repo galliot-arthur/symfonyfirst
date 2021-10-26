@@ -109,10 +109,22 @@ class AnnoncesRepository extends ServiceEntityRepository
      * @param integer $limit Limit of annonces by page
      * @return Annonces
      */
-    public function getPaginatedAnnonces(int $page, int $limit)
+    public function getPaginatedAnnonces(int $page, int $limit,string $word = null, $filters = null)
     {
         $query = $this->createQueryBuilder('a')
-            ->where('a.active = 1')
+            ->where('a.active = 1');
+
+        if ($word) {
+            $query
+                ->andWhere('a.title LIKE :word')
+                ->setParameter(':word', "%$word%");
+        }
+        if ($filters) {
+            $query
+                ->andWhere('a.categories = :cat')
+                ->setParameter(':cat', $filters);
+        }
+        $query
             ->orderBy('a.created_at', 'DESC')
             ->setFirstResult(($page * $limit) - $limit)
             ->setMaxResults($limit);
