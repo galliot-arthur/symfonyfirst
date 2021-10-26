@@ -20,4 +20,4 @@
 ###< phpunit/phpunit ###
 
 ###> images
-/public/uploads/
+/public/uploads/*.jpg
