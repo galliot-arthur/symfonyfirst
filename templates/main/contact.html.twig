@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block body %}
+    <div class="row align-items-center">
+        <div class="col-8">
+            <h1>Contactez-nous</h1>
+        </div>
+        <div class="col-4 text-end">
+            <a 
+                class="link-dark" 
+                href="{{ path('app_home') }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            Accueil</a>
+        </div>
+    </div>
+
+    <form
+        method="post">
+        <label 
+            for="object">
+            Objet :
+        </label>
+        <input 
+            class="form-control"
+            name="object"
+            id="object"
+            type="text"
+            placeholder="Bravo pour votre site">
+        <label 
+            class="mt-2"
+            for="content">
+            Votre message :
+        </label>
+        <textarea 
+            class="form-control"
+            name="content"
+            id="content"
+            placeholder="Bravo pour votre site">
+        </textarea>
+        <input 
+            class="btn btn-dark mt-2"
+            type="submit">
+    </form>
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

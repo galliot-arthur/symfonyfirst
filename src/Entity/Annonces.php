@@ -80,11 +80,17 @@ class Annonces
      */
     private $comments;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Messages::class, mappedBy="object")
+     */
+    private $messages;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->favoris = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->messages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -253,6 +259,33 @@ class Annonces
             if ($comment->getAnnonces() === $this) {
                 $comment->setAnnonces(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Messages[]
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Messages $message): self
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages[] = $message;
+            $message->addObject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Messages $message): self
+    {
+        if ($this->messages->removeElement($message)) {
+            $message->removeObject($this);
         }
 
         return $this;

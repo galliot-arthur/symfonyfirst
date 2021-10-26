@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Annonces;
 use App\Entity\Comments;
+use App\Entity\Messages;
 use App\Form\CommentsType;
+use App\Form\MessagesType;
 use App\Repository\AnnoncesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,32 +18,22 @@ class AnnoncesController extends AbstractController
     #[Route('/annonces/{id}', name: 'annonces_view')]
     public function show(Annonces $annonce, Request $request): Response
     {
+        $message = new Messages;
+        $messageForm = $this->createForm(MessagesType::class, $message);
+        $messageForm->handleRequest($request);
 
-        $comment = new Comments;
-        $form = $this->createForm(
-            CommentsType::class,
-            $comment
-        );
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $comment
-                ->setAuthor($this->getUser())
-                ->setAnnonces($annonce);
+        if($messageForm->isSubmitted() && $messageForm->isValid()) {
+            $message->setSender($this->getUser());
+            $message->setRecipient($annonce->getUsers());
+            $message->setTitle($annonce->getTitle());
+            $message->addObject($annonce);
             $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
+            $em->persist($message);
             $em->flush();
-
-            // re-init $comment & form
-            $comment = new Comments;
-            $form = $this->createForm(
-                CommentsType::class,
-                $comment
-            );
 
             $this->addFlash(
                 'success',
-                'Vos commentaire à bien été posté.'
+                'Votre message à bien été envoyé'
             );
             $this->redirectToRoute('annonces_view', ['id' => $annonce->getId()]);
         }
@@ -51,7 +43,7 @@ class AnnoncesController extends AbstractController
         return $this->render('annonces/show.html.twig', [
             'annonce' => $annonce,
             'images' => $annonce->getImages(),
-            'form' => $form->createView(),
+            'form' => $messageForm->createView(),
             'comments' => $annonce->getComments(),
         ]);
     }

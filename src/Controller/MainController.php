@@ -6,12 +6,17 @@ use App\Entity\Annonces;
 use App\Entity\Categories;
 use App\Repository\AnnoncesRepository;
 use App\Service\AnnoncesService;
+use App\Service\MessagesService;
 use App\Service\PaginationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
@@ -28,9 +33,9 @@ class MainController extends AbstractController
         PaginationService $paginService,
         AnnoncesService $annoncesService,
         AnnoncesRepository $annoncesRepo,
-        Request $request
+        Request $request,
+        MessagesService $messagesService,
     ): Response {
-
         // Counting pages without search situation
         $limit = 8;
         $totalAnnonces = $annoncesRepo
@@ -85,12 +90,15 @@ class MainController extends AbstractController
             $userId
         );
 
+        $newMessage = $messagesService->showUnreadMessage($this->getUser());
+
         return $this->render('main/index.html.twig', [
             'form' => $form->createView(),
             'annonces' => $annonces,
             'actual_page' => $page,
             'limit' => $limit,
             'total_annonces' => $totalAnnonces,
+            'newMessage' => $newMessage,
         ]);
     }
 
@@ -115,5 +123,32 @@ class MainController extends AbstractController
                 'placeholder' => 'Catégorie',
             ])
             ->getForm();
+    }
+
+    #[Route('/contact', name: 'app_home_contact')]
+    public function contact(Request $request, MailerInterface $mailer):Response
+    {
+        if ($request->request->all()) {
+            $email = new TemplatedEmail();
+            $email
+                ->from(new Address($this->getUser()->getEmail()))
+                ->to(new Address("galliot.arthur@gmail.com"))
+                ->subject($request->request->get('object'))
+                ->htmlTemplate('email/contact.html.twig')
+                ->context([
+                    'message' => $request->request->get('content'),
+                ]);
+                $mailer->send($email);
+
+            $this->addFlash(
+                'success',
+                'Votre message à bien été envoyé'
+            );
+            $this->redirectToRoute('app_home');
+        }
+
+        return $this->render('main/contact.html.twig', [
+
+        ]);
     }
 }

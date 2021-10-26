@@ -1,0 +1,77 @@
+    {# COMMENNTS #}
+
+    <div class="card shadow-sm my-4">
+        <div class="card-header">
+            <h6 class="mb-0">Commentaires</h6>
+        </div>
+        <div class="card-body">
+            {% for comment in comments %}
+                <div class="d-flex justify-content-between align-items-center">
+                    <small>{{ comment.author.firstname }} {{ comment.author.name }} le {{ comment.createdAt|date('d/m/y à H:i') }}</small>
+                    {% if comment.author == app.user %}
+                        <div>
+        
+                            {# MODAL DELETE #}
+                            <button 
+                                type="button" 
+                                class="btn-silent" 
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDelete{{ comment.id }}">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                            <div 
+                                class="modal fade" 
+                                id="modalDelete{{ comment.id }}" 
+                                tabindex="-1" 
+                                aria-labelledby="modalDeleteLabel" 
+                                aria-hidden="true">
+
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 
+                                                class="modal-title" 
+                                                id="modalDeleteLabel">
+                                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                                Confirmer
+                                            </h5>
+                                            <button 
+                                                type="button" 
+                                                class="btn-close" 
+                                                data-bs-dismiss="modal" 
+                                                aria-label="Close">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Confirmer la suppression de ce commentaire ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <a 
+                                                href="{{ path('annonces_comment_delete', {"id" : comment.id, "id_annonce" : annonce.id}) }}" 
+                                                class="btn btn-dark">
+                                                Supprimer
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {# --- #}
+                        </div>
+                    {% endif %}
+                </div>
+                <p class="mb-1 text-dark">
+                    {{ comment.content }}
+                </p>
+                <hr>
+            {% endfor %}
+            {% if app.user %}
+                <h6>Ajouter un commentaire</h6>
+                {{ form(form) }}
+            {% else %}
+                Vous devez être connecter pour ajouter un commentaire. <br>
+                <a href="{{ path('app_login') }}">Se connecter</a> <br>
+                <a href="{{ path('app_register') }}">S'inscrire</a>
+            {% endif %}
+        </div>
+    </div>

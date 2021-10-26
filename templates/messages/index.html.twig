@@ -17,71 +17,162 @@
         </div>
     </div>
     {# send message modal #}
-    
+    <h2>Ventes</h2>
     <ul class="list-group mt-3 shadow-sm">
         {% for message in app.user.received|sort((b, a) => a.createdAt <=> b.createdAt ) %}  
-            <li class="list-group-item {{ message.isRead ? '' : 'bg-warning' }}">
-                <div class="row align-items-center">
-                    <div class="col-4 text-break">
-                        <a 
-                            class="link-dark text-decoration-none"
-                            href="{{ path('users_message_read', {"id" : message.id })}}">
-                            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                            {{message.sender.firstname}}
-                            {{message.sender.name}}
-                        </a>
-                    </div>
-                    <div class="col-3 text-break">
-                        <a 
-                            class="link-dark text-decoration-none"
-                            href="{{ path('users_message_read', {"id" : message.id })}}">
-                            <i class="fa fa-envelope{{ message.isRead ? '-o' : '' }}" aria-hidden="true"></i>
-                            {{message.title}}
-                        </a>
-                    </div>
-                    <div class="col-5 d-flex justify-content-between">
-                        <a 
-                            class="link-dark text-decoration-none"
-                            href="{{ path('users_message_read', {"id" : message.id })}}">
-                            dernier message le {{message.createdAt|date('d/m/Y à H:i')}}
-                        </a>
-                            <!-- Button trigger modal -->
-                            <button 
-                                type="button" 
-                                class="btn-silent" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#delete{{ message.id }}">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>
+            {% if message.parent is empty %}
+                <li class="list-group-item 
+                    {% for child in message.children %}
+                        {% if child.isRead == 0 %}bg-warning{% endif %}
+                    {% endfor %}">
+                    <div class="row align-items-center">
+                        <div class="col-4 text-break">
+                            <a 
+                                class="link-dark text-decoration-none"
+                                href="{{ path('users_message_read', {"id" : message.id })}}">
+                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                {{message.sender.firstname}}
+                                {{message.sender.name}}
+                            </a>
+                        </div>
+                        <div class="col-3 text-break">
+                            <a 
+                                class="link-dark text-decoration-none"
+                                href="{{ path('users_message_read', {"id" : message.id })}}">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                {{ message.title }}
+                            </a>
+                        </div>
+                        <div class="col-5 d-flex justify-content-between">
+                            <a 
+                                class="link-dark text-decoration-none"
+                                href="{{ path('users_message_read', {"id" : message.id })}}">
+                                dernier message le {{message.createdAt|date('d/m/Y à H:i')}}
+                            </a>
+                                <!-- Button trigger modal -->
+                                <button 
+                                    type="button" 
+                                    class="btn-silent" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#delete{{ message.id }}">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="delete{{ message.id }}" tabindex="-1" aria-labelledby="delete{{ message.id }}Label" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="delete{{ message.id }}Label">Confirmer la suppression ?</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button 
-                                                type="button" 
-                                                class="btn btn-warning" 
-                                                data-bs-dismiss="modal">
-                                                Annuler
-                                            </button>
-                                            <a 
-                                                class="link-dark"
-                                                href="{{ path('users_message_delete', {"id" : message.id })}}">
-                                                Supprimer
-                                            </a>
+                                <!-- Modal -->
+                                <div class="modal fade" id="delete{{ message.id }}" tabindex="-1" aria-labelledby="delete{{ message.id }}Label" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="delete{{ message.id }}Label">Confirmer la suppression ?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn-warning" 
+                                                    data-bs-dismiss="modal">
+                                                    Annuler
+                                                </button>
+                                                <a 
+                                                    class="link-dark"
+                                                    href="{{ path('users_message_delete', {"id" : message.id })}}">
+                                                    Supprimer
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                        </div>
                     </div>
-                </div>
+                </li>
+                {{ loop.last ? null : '<hr class="my-0">' }}
+            {% endif %}
+        {% else %}
+            <li class="list-group-item">
+                Vous n'avez pas encore de discussions pour le moment. <br>
+                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                Pour commencer, contacter un vendeur.
             </li>
-            {{ loop.last ? null : '<hr class="my-0">' }}
+        {% endfor %}
+    </ul>
+    <hr>
+    <h2>Achats</h2>
+    <ul class="list-group mt-3 shadow-sm">
+        {% for message in app.user.sent|sort((b, a) => a.createdAt <=> b.createdAt ) %}  
+            {% if message.parent is empty %}
+                <li class="list-group-item
+                    {% for child in message.children %}
+                        {% if child.isRead == 0 %}bg-warning{% endif %}
+                    {% endfor %}
+                    ">
+                    <div class="row align-items-center">
+                        <div class="col-4 text-break">
+                            <a 
+                                class="link-dark text-decoration-none"
+                                href="{{ path('users_message_read', {"id" : message.id })}}">
+                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                {{message.sender.firstname}}
+                                {{message.sender.name}}
+                            </a>
+                        </div>
+                        <div class="col-3 text-break">
+                            <a 
+                                class="link-dark text-decoration-none"
+                                href="{{ path('users_message_read', {"id" : message.id })}}">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                {{ message.title }}
+                            </a>
+                        </div>
+                        <div class="col-5 d-flex justify-content-between">
+                            <a 
+                                class="link-dark text-decoration-none"
+                                href="{{ path('users_message_read', {"id" : message.id })}}">
+                                dernier message le {{message.createdAt|date('d/m/Y à H:i')}}
+                            </a>
+                                <!-- Button trigger modal -->
+                                <button 
+                                    type="button" 
+                                    class="btn-silent" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#delete{{ message.id }}">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="delete{{ message.id }}" tabindex="-1" aria-labelledby="delete{{ message.id }}Label" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="delete{{ message.id }}Label">Confirmer la suppression ?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button 
+                                                    type="button" 
+                                                    class="btn btn-warning" 
+                                                    data-bs-dismiss="modal">
+                                                    Annuler
+                                                </button>
+                                                <a 
+                                                    class="link-dark"
+                                                    href="{{ path('users_message_delete', {"id" : message.id })}}">
+                                                    Supprimer
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </li>
+                {{ loop.last ? null : '<hr class="my-0">' }}
+            {% endif %}
+        {% else %}
+            <li class="list-group-item">
+                Vous n'avez pas encore de discussions pour le moment. <br>
+                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                Pour commencer, contacter un vendeur.
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

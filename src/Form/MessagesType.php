@@ -17,23 +17,14 @@ class MessagesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class, [
-                "label" => false,
+            ->add('message', TextareaType::class,[
                 "attr" => [
-                    "placeholder" => "Objet"
+                    "placeholder" => "Bonjour, cette annonce est-elle toujours disponible ?"
                 ]
-            ])
-            ->add('message', TextareaType::class)
-            //->add('created_at')
-            //->add('is_read')
-            ->add('recipient', EntityType::class, [
-                "label" => "Destinataire",
-                "class" => Users::class,
-                "choice_label" => "name"
             ])
             ->add('Envoyer', SubmitType::class,[
                 "attr" => [
-                    "class" => "btn-dark"
+                    "class" => "btn-dark shadow-sm"
                 ]
             ])
         ;
