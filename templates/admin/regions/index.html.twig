@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer les régionss{% endblock %}
+
+{% block body %}
+    <div class="row align-items-center">
+        <div class="col-8">
+            <h1>Gérer les régionss</h1>
+        </div>
+        <div class="col-4 text-end">
+            <a 
+                class="link-dark" 
+                href="{{ path('admin_home') }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            Admin</a>
+        </div>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item text-center">
+            <a href="{{ path('admin_regions_ajout') }}" class="link-dark ms-3">
+                <i class="fa fa-plus"></i>
+                Ajouter
+            </a>
+        </li>
+        {% for region in regions %}
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col-4">{{ region.name }}</div>
+                    <div class="col-4 d-flex justify-content-end align-items-center">
+                        <a 
+                            href="{{ path('admin_regions_modifier', {id: region.id}) }}" 
+                            class="btn btn-warning text-dark ms-3 shadow-sm">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-danger text-dark ms-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalDelete{{ region.id }}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+
+                        <!-- Modal -->
+                        <div 
+                            class="modal fade" 
+                            id="modalDelete{{ region.id }}" 
+                            tabindex="-1" 
+                            aria-labelledby="modalDeleteLabel" 
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 
+                                            class="modal-title" 
+                                            id="modalDeleteLabel">
+                                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                                            Confirmer
+                                        </h5>
+                                        <button 
+                                            type="button" 
+                                            class="btn-close" 
+                                            data-bs-dismiss="modal" 
+                                            aria-label="Close">
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Confirmer la suppression de la catégorie {{ region.name }} ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                                        <a href="/admin/regions/supprimer/{{ region.id }}" class="btn btn-dark">Supprimer</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+        
+{% endblock %}

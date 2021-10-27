@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ app.request.attributes.get('_route') == 'admin_categories_ajout' ? 'Ajouter' : 'Modifier' }} une Région{% endblock %}
+
+{% block body %}
+    <h1>{{ app.request.attributes.get('_route') == 'admin_categories_ajout' ? 'Ajouter' : 'Modifier' }} une Région</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+        <div 
+            id="departements" 
+            data-prototype="{{ form_row(form.departements.vars.prototype)|e('html_attr') }}">
+            {{ form_row(form.departements) }}
+            <span></span>
+        </div>
+    {{ form_end(form) }}
+
+{% endblock %}
+{% block javascripts %}
+<script src="{{ asset('/js/ajoutsDepartementsRegions.js') }}">
+
+</script>
+{% endblock %}

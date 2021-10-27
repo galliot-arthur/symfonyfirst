@@ -48,32 +48,34 @@
 {% set queryString = queryParams|filter((v, k) => k != "actual_page" and k != "ajax")|url_encode %}
 
 {# PAGINATION #}
-<div>
-    <ul class="pagination pagination-sm">
-        <li 
-            class="page-item shadow-sm {{ actual_page == 1 ? 'disabled' : ''}}">
-            <a 
-                class="page-link" 
-                href="{{ actual_page - 1 }}/?{{ queryString }}">
-                &laquo;
-            </a>
-        </li>
-        {% for page in 1.. (( (total_annonces / limit)|round(0, 'ceil'))) %}                        
-            <li class="page-item shadow-sm {{ actual_page == page ? 'active' : '' }}">
-                <a 
-                    class="page-link" 
-                    href="/{{ page }}/?{{ queryString }}">
-                    {{ page }}
-                </a>
-            </li>
-        {% endfor %}
-        <li 
-            class="page-item shadow-sm {{ actual_page == (total_annonces / limit)|round(0, 'ceil') ? 'disabled' : ''}}">
-            <a 
-                class="page-link" 
-                href="{{ actual_page + 1 }}/?{{ queryString }}">
-                &raquo;
-                </a>
-        </li>
-    </ul>
-</div>
+{% if annonces is not empty %}
+	<div>
+		<ul class="pagination pagination-sm">
+			<li 
+				class="page-item shadow-sm {{ actual_page == 1 ? 'disabled' : ''}}">
+				<a 
+					class="page-link" 
+					href="{{ actual_page - 1 }}/?{{ queryString }}">
+					&laquo;
+				</a>
+			</li>
+			{% for page in 1.. (( (total_annonces / limit)|round(0, 'ceil'))) %}                        
+				<li class="page-item shadow-sm {{ actual_page == page ? 'active' : '' }}">
+					<a 
+						class="page-link" 
+						href="/{{ page }}/?{{ queryString }}">
+						{{ page }}
+					</a>
+				</li>
+			{% endfor %}
+			<li 
+				class="page-item shadow-sm {{ actual_page == (total_annonces / limit)|round(0, 'ceil') ? 'disabled' : ''}}">
+				<a 
+					class="page-link" 
+					href="{{ actual_page + 1 }}/?{{ queryString }}">
+					&raquo;
+					</a>
+			</li>
+		</ul>
+	</div>
+{% endif %}
